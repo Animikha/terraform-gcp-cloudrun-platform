@@ -22,3 +22,8 @@ variable "subnets" {
         region = string
     }))
 }
+
+variable "internal_source_range" {
+    description = "The ip ranges whose resources can talk to each other"
+    type = list(string)
+}

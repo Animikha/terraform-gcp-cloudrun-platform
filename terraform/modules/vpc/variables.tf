@@ -11,3 +11,7 @@ variable "subnets" {
     }))
 }
 
+variable "internal_source_ranges" {
+    description = "The ip ranges whose resources can talk to each other"
+    type = list(string)
+}

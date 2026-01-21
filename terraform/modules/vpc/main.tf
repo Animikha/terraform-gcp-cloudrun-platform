@@ -40,17 +40,17 @@ resource "google_compute_firewall" "allow_internal" {
 
   source_ranges = var.internal_source_ranges
 
-  allows {
+  allow {
     protocol = "tcp"
     ports = ["0-65535"]
   }
 
-  allows {
+  allow {
     protocol = "udp"
     ports = ["0-65535"]
   }
 
-  allows {
+  allow {
     protocol = "icmp"
   }
 }
@@ -67,10 +67,10 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 
   direction = "INGRESS"
   priority = 1000
-  source_ranges = 
+  source_ranges = ["35.235.240.0/20"] 
   target_tags = ["iap-ssh"]
 
-  allows {
+  allow {
     protocol = "tcp"
     ports = ["22"]
   }
