@@ -1,18 +1,3 @@
-terraform {
-  required_version = ">=1.5.0"
-  required_providers {
-    google = {
-      source = "hashicorp/google"
-      version = ">=5.0.0"
-    }
-  }
-}
-
-provider "google" {
-  project = var.project_id
-  region = var.region
-}
-
 #---------------------------------------------
 # VPC
 #----------------------------------------------
@@ -20,7 +5,7 @@ provider "google" {
 resource "google_compute_network" "vpc" {
   name = var.vpc_name
   auto_create_subnetworks = false
-  routing_mode = var.routing_mode
+  routing_mode = "REGIONAL"
   delete_default_routes_on_create = true
   description = "Strictly private internal VPC (no internet egress)"
 
@@ -33,8 +18,8 @@ resource "google_compute_network" "vpc" {
 resource "google_compute_subnetwork" "subnet" {
   for_each = var.subnets
 
-  name = each.value.name
-  ip_cidr_rage = each.value.cidr
+  name = each.name
+  ip_cidr_range = each.value.cidr
   region = each.value.region
   network = google_compute_network.vpc.id
 
@@ -77,6 +62,17 @@ resource "google_compute_firewall" "allow_internal" {
 
 resource "google_compute_firewall" "allow_iap_ssh" {
   
+  name = "${var.vpc_name}-allow-iap-ssh"
   network = google_compute_network.vpc.id
+
+  direction = "INGRESS"
+  priority = 1000
+  source_ranges = 
+  target_tags = ["iap-ssh"]
+
+  allows {
+    protocol = "tcp"
+    ports = ["22"]
+  }
 
 }

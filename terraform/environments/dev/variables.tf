@@ -1,3 +1,15 @@
+variable "project_id" {
+    type = string
+}
+
+variable "region" {
+    type = string
+}
+
+
+#------------------------------------
+# VPC Module
+#------------------------------------
 variable "vpc_name" {
     description = "Name of the VPC"
     type = string
@@ -10,4 +22,3 @@ variable "subnets" {
         region = string
     }))
 }
-
