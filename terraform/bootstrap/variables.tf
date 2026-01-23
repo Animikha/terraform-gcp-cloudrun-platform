@@ -13,7 +13,7 @@ variable "account_id" {
     description = "Account id of the service account"
 } 
 
-variable "tf_account_roles" {
+variable "tf_serv_account_roles" {
     type = set(string)
     description = "IAM roles to assign to the service account"
 }

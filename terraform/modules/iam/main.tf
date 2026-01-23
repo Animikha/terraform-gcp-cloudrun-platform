@@ -4,7 +4,7 @@ resource "google_service_account" "tf_service_account" {
 }
 
 resource "google_project_iam_member" "tf_roles" {
-    for_each = var.tf_account_roles
+    for_each = var.tf_serv_account_roles
     project = var.project
     role = each.value
     member = "serviceAccount:${google_service_account.tf_service_account.email}"

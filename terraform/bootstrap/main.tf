@@ -15,6 +15,6 @@ module "iam" {
     source = "../modules/iam"
     project     = var.project
     account_id = var.account_id
-    tf_account_roles = var.tf_account_roles
+    tf_serv_account_roles = var.tf_serv_account_roles
 
 }
