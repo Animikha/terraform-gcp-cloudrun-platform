@@ -1,15 +1,20 @@
 provider "google" {
   credentials = file("")
-  project     = var.project_id
+  project     = var.project
   region      = var.region
 }
 
 module "artifact_registry" {
   source = "../modules/artifact_registry"
-  repos = var.repos 
+  repos = var.repos
+  project     = var.project
+  region      = var.region
 }
 
 module "iam" {
     source = "../modules/iam"
+    project     = var.project
+    account_id = var.account_id
+    tf_account_roles = var.tf_account_roles
 
 }
