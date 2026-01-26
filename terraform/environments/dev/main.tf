@@ -1,8 +1,15 @@
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+  config = {
+    bucket = "tf-state-bootstrap-tgcp"
+    prefix = "state"
+  }
+}
 provider "google" {
   credentials = file("")
   project     = var.project_id
   region      = var.region
-  impersonate_service_account = 
+  impersonate_service_account = data.terraform_remote_state.bootstrap.outputs.tf_serv_account_email
 }
 
 module "vpc" {
