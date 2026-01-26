@@ -6,7 +6,6 @@ variable "region" {
     type = string
 }
 
-variable "name" {
-    type = string
+variable "backends" {
+    type = set(string)
 }
-

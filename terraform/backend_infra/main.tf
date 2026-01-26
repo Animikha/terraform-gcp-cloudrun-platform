@@ -1,10 +1,15 @@
+terraform {
+  backend "local" {}
+}
+
 provider "google" {
   project     = var.project
   region      = var.region
 }
 
 resource "google_storage_bucket" "tf_state" {
-    name = var.name
+    for_each = var.backends
+    name = "tf-state-${each.value}-${project}"
     location = var.region
     force_destroy = false
 
