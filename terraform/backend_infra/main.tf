@@ -9,7 +9,7 @@ provider "google" {
 
 resource "google_storage_bucket" "tf_state" {
     for_each = var.backends
-    name = "tf-state-${each.value}-${project}"
+    name = "tf-state-${each.value}-tgcp"
     location = var.region
     force_destroy = false
 
