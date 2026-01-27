@@ -1,6 +1,8 @@
 stages:
+  - backend_infra_deploy
   - bootstrap_infra_deploy
-  - build
+  - dev_infra_deploy
+  - services_deploy
 
 workflow:
  rules:

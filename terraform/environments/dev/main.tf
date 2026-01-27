@@ -6,7 +6,6 @@ data "terraform_remote_state" "bootstrap" {
   }
 }
 provider "google" {
-  credentials = file("")
   project     = var.project_id
   region      = var.region
   impersonate_service_account = data.terraform_remote_state.bootstrap.outputs.tf_serv_account_email
@@ -18,4 +17,8 @@ module "vpc" {
     subnets = var.subnets
     internal_source_ranges = var.internal_source_ranges
 
+}
+
+module "cloudrun_service" {
+  source = "../modules/cloudrun_service"
 }
