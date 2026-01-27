@@ -6,7 +6,7 @@ data "terraform_remote_state" "bootstrap" {
   }
 }
 provider "google" {
-  project     = var.project_id
+  project     = var.project
   region      = var.region
   impersonate_service_account = data.terraform_remote_state.bootstrap.outputs.tf_serv_account_email
 }
