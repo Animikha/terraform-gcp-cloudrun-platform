@@ -19,6 +19,17 @@ module "vpc" {
 
 }
 
+module "vpc_connector" {
+  source = "../modules/vpc_connector"
+  project     = var.project
+  region      = var.region
+  vpc_connector_name = var.vpc_connector_name
+  vpc_name = module.vpc.networ_name
+  connector_subnet_cidr = var.connector_subnet_cidr
+  depends_on = [ module.vpc ]
+}
+
 module "cloudrun_service" {
   source = "../modules/cloudrun_service"
+  depends_on = [ module.vpc_connector ]
 }

@@ -27,3 +27,17 @@ variable "internal_source_ranges" {
     description = "The ip ranges whose resources can talk to each other"
     type = list(string)
 }
+
+#-------------------------------
+# VPC Connector
+#-------------------------------
+variable "vpc_connector_name" {
+    description = "Name of the vpc connector"
+    type = string
+}
+
+variable "connector_subnet_cidr" {
+    description = "CIDR of the vpc connector"
+    type = string
+}
+
