@@ -6,4 +6,18 @@ variable "region" {
     type = string
 }
 
-variable "services"
+variable "services" {
+    type = map(objects({
+        name = string
+        image = string
+        cpu = string
+        memory = string
+        min_instances = number
+        max_instances = number
+        env_vars = map(string)
+    }))
+}
+
+variable "vpc_connector" {
+    type = string
+}
