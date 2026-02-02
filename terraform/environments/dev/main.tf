@@ -37,3 +37,10 @@ module "cloudrun_service" {
   vpc_connector = module.vpc_connector.id
   depends_on = [ module.vpc_connector ]
 }
+
+module "load_balancer" {
+  source = "../modules/load_balancer"
+  project = var.project
+  region = var.region
+  depends_on = [module.cloudrun_service] 
+}
