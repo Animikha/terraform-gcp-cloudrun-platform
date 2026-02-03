@@ -1,5 +1,5 @@
 resource "google_compute_region_network_endpoint_group" "cloud_run_negs" {
-    for_each = var.services
+    for_each = var.lb_routes
     name = "${each.key}-neg"
     region = var.region
     network_endpoint_type = "SERVERLESS"
@@ -21,7 +21,7 @@ resource "google_compute_backend_service" "backends" {
 }
 
 resource "google_compute_url_map" "internal_url_map" {
-    name = var.url_map_name #"lb-url-map-tgcp"
+    name = var.lb_url_map_name 
     default_service = google_compute_backend_service.backends["frontend"].id
 
     host_rule {
@@ -33,31 +33,28 @@ resource "google_compute_url_map" "internal_url_map" {
         name = "services"
         default_service = google_compute_backend_service.backends["frontend"].id
 
-        path_rule {
-            paths = ["/auth/*"]
-            service = google_compute_backend_service.backends["auth"].id
-
-        }
-
-        path_rule {
-            paths = ["/api/*"]
-            service = google_compute_backend_service.backends["api"].id
+        dynamic path_rule {
+            for_each = var.lb_routes
+            content {
+                paths = each.value.paths
+                service = google_compute_backend_service.backends[each.key].id
+            }
         }
     }
 }
 
 resource "google_compute_target_http_proxy" "internal_proxy" {
-    name = var.proxy_name
+    name = var.lb_http_proxy_name
     url_map = google_compute_url_map.internal_url_map.id
 }
 
 resource "google_compute_forwarding_rule" "internal_lb" {
-    name = var.forwarding_rule_name
+    name = var.lb_forwarding_rule_name
     region = var.region
     load_balancing_scheme = "INTERNAL_MANAGED"
     ip_protocol = "TCP"
     port_range = "80"
     target = google_compute_target_http_proxy.internal_proxy.id
     network = var.vpc_name
-    subnetwork = var.subnet_name
+    subnetwork = var.lb_subnet_name 
 }

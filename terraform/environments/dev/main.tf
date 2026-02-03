@@ -24,7 +24,7 @@ module "vpc_connector" {
   project     = var.project
   region      = var.region
   vpc_connector_name = var.vpc_connector_name
-  vpc_name = module.vpc.networ_name
+  vpc_name = module.vpc.network_name
   connector_subnet_cidr = var.connector_subnet_cidr
   depends_on = [ module.vpc ]
 }
@@ -42,6 +42,11 @@ module "load_balancer" {
   source = "../modules/load_balancer"
   project = var.project
   region = var.region
-  vpc_name = module.vpc.networ_name
+  lb_routes = var.lb_routes
+  lb_url_map_name = var.lb_url_map_name 
+  lb_http_proxy_name = var.lb_http_proxy_name
+  lb_forwarding_rule_name = var.lb_forwarding_rule_name
+  vpc_name = module.vpc.network_name
+  lb_subnet_name = module.vpc.lb_subnet_name
   depends_on = [module.cloudrun_service, module.vpc_connector, module.vpc] 
 }
