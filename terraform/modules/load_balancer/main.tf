@@ -36,7 +36,7 @@ resource "google_compute_url_map" "internal_url_map" {
         dynamic path_rule {
             for_each = var.lb_routes
             content {
-                paths = each.value.paths
+                paths = path_rule.value.paths
                 service = google_compute_backend_service.backends[each.key].id
             }
         }
@@ -57,4 +57,12 @@ resource "google_compute_forwarding_rule" "internal_lb" {
     target = google_compute_target_http_proxy.internal_proxy.id
     network = var.vpc_name
     subnetwork = var.lb_subnet_name 
+    ip_address = google_compute_address.lb_ip.address
+}
+
+resource "google_compute_address" "lb_ip" {
+    name = "gugug" #var.lb_ip_name
+    region = var.region
+    subnetwork = var.lb_subnet_name 
+    address_type = "INTERNAL"
 }
