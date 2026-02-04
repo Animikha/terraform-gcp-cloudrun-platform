@@ -61,7 +61,7 @@ resource "google_compute_forwarding_rule" "internal_lb" {
 }
 
 resource "google_compute_address" "lb_ip" {
-    name = "gugug" #var.lb_ip_name
+    name = var.lb_ip_name
     region = var.region
     subnetwork = var.lb_subnet_name 
     address_type = "INTERNAL"

@@ -48,5 +48,6 @@ module "load_balancer" {
   lb_forwarding_rule_name = var.lb_forwarding_rule_name
   vpc_name = module.vpc.network_name
   lb_subnet_name = module.vpc.lb_subnet_name
+  lb_ip_name = var.lb_ip_name
   depends_on = [module.cloudrun_service, module.vpc_connector, module.vpc] 
 }

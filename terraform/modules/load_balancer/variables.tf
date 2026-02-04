@@ -36,3 +36,8 @@ variable "lb_subnet_name" {
     description = "Name of subnet which would have the load balancer"
     type = string
 }
+
+variable "lb_ip_name" {
+    description = "Name of ip address reserved for load balancer"
+    type = string
+}

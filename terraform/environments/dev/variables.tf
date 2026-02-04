@@ -79,3 +79,8 @@ variable "lb_forwarding_rule_name" {
     description = "Name of the forwarding rule"
     type = string
 }
+
+variable "lb_ip_name" {
+    description = "Name of ip address reserved for load balancer"
+    type = string
+}
