@@ -3,9 +3,57 @@ stages:
   - bootstrap_infra_deploy
   - dev_infra_deploy
   - services_deploy
-
+ 
+stages:
+  - backend_infra_deploy
+  - bootstrap_infra_deploy
+  - dev_infra_deploy
+ 
 workflow:
- rules:
-  - if: '$CI_COMMIT_BRANCH == "develop"'
-    when: always
-  - when: never 
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      when: always
+    - when: never
+ 
+.default_terraform:
+  image: google/cloud-sdk:latest
+  before_script:
+    - apt-get update && apt-get install -y wget unzip
+    - wget https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
+    - unzip terraform_1.9.5_linux_amd64.zip -d /usr/local/bin/
+    - terraform version
+ 
+    # Auth
+    - echo "$GCLOUD_KEY" > $CI_PROJECT_DIR/gcp-key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
+    - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+ 
+backend_infra_deploy:
+  stage: backend_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/backend_infra
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
+ 
+bootstrap_infra_deploy:
+  stage: bootstrap_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
+ 
+dev_infra_deploy:
+  stage: dev_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/environments/dev
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
+ 
+ services_deploy:
+ 
