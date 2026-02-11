@@ -12,7 +12,7 @@ provider "google" {
 }
 
 module "vpc" {
-    source = "../modules/vpc"
+    source = "../../modules/vpc"
     vpc_name = var.vpc_name
     subnets = var.subnets
     internal_source_ranges = var.internal_source_ranges
@@ -20,7 +20,7 @@ module "vpc" {
 }
 
 module "vpc_connector" {
-  source = "../modules/vpc_connector"
+  source = "../../modules/vpc_connector"
   project     = var.project
   region      = var.region
   vpc_connector_name = var.vpc_connector_name
@@ -30,7 +30,7 @@ module "vpc_connector" {
 }
 
 module "cloudrun_service" {
-  source = "../modules/cloudrun_service"
+  source = "../../modules/cloudrun_service"
   project     = var.project
   region      = var.region
   services = var.services
@@ -39,7 +39,7 @@ module "cloudrun_service" {
 }
 
 module "load_balancer" {
-  source = "../modules/load_balancer"
+  source = "../../modules/load_balancer"
   project = var.project
   region = var.region
   lb_routes = var.lb_routes

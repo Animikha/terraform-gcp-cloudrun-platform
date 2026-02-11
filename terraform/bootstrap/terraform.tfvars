@@ -21,7 +21,7 @@ tf_serv_account_roles = [
 #-------------------------------------------------
 repos = {
     frontend = {
-        name = "frotend"
+        name = "frontend"
         description = "UI of the application"
     }
 
