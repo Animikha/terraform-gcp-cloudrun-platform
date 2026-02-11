@@ -1,5 +1,4 @@
 provider "google" {
-  credentials = file("")
   project     = var.project
   region      = var.region
 }
