@@ -45,7 +45,7 @@ variable "connector_subnet_cidr" {
 # Cloud Run Service
 #---------------------------------
 variable "services" {
-    type = map(objects({
+    type = map(object({
         name = string
         image = string
         cpu = string
