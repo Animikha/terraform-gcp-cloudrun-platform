@@ -3,15 +3,9 @@ stages:
   - bootstrap_infra_deploy
   - dev_infra_deploy
  
- 
-stages:
-  - backend_infra_deploy
-  - bootstrap_infra_deploy
-  - dev_infra_deploy
- 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
     - when: never
  
@@ -24,7 +18,7 @@ workflow:
     - terraform version
  
     # Auth
-    - echo "$GCLOUD_KEY" > $CI_PROJECT_DIR/gcp-key.json
+    - echo "$GCLOUD_KEY"| base64 -d > $CI_PROJECT_DIR/gcp-key.json
     - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
     - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
  
