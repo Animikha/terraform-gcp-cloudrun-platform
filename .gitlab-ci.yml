@@ -1,5 +1,5 @@
 stages:
-  - backend_infra_deploy
+  #- backend_infra_deploy
   - bootstrap_infra_deploy
   - dev_infra_deploy
  
@@ -22,14 +22,14 @@ workflow:
     - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
     - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
  
-backend_infra_deploy:
-  stage: backend_infra_deploy
-  extends: .default_terraform
-  script:
-    - cd terraform/backend_infra
-    - terraform init
-    - terraform plan
-    - terraform apply -auto-approve
+# backend_infra_deploy:
+#   stage: backend_infra_deploy
+#   extends: .default_terraform
+#   script:
+#     - cd terraform/backend_infra
+#     - terraform init
+#     - terraform plan
+#     - terraform apply -auto-approve
  
 bootstrap_infra_deploy:
   stage: bootstrap_infra_deploy
