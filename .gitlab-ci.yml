@@ -3,15 +3,9 @@ stages:
   - bootstrap_infra_deploy
   - dev_infra_deploy
  
- 
-stages:
-  - backend_infra_deploy
-  - bootstrap_infra_deploy
-  - dev_infra_deploy
- 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
     - when: never
  
