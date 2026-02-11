@@ -18,7 +18,7 @@ workflow:
     - terraform version
  
     # Auth
-    - echo "$GCLOUD_KEY" > $CI_PROJECT_DIR/gcp-key.json
+    - echo "$GCLOUD_KEY"| base64 -d > $CI_PROJECT_DIR/gcp-key.json
     - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
     - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
  
