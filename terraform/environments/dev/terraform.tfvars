@@ -7,12 +7,12 @@ region = "europe-west2"
 vpc_name = "vpc-tgcp"
 
 subnets = {
-    subnet_1 = {
+    subnet-1 = {
         cidr = "10.10.1.0/24"
         region = "europe-west2"
     }
 
-    subnet_2 = {
+    subnet-2 = {
         cidr = "10.10.2.0/24"
         region = "europe-west2"
     }
@@ -65,8 +65,8 @@ services = {
         max_instances = 1
 
         env_vars = {
-            SERVICE_NAME = "frontend"
-            LOG_LEVEL = "api"
+            SERVICE_NAME = "api"
+            LOG_LEVEL = "info"
         }
     }
 }

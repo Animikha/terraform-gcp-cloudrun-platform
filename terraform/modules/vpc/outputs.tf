@@ -5,5 +5,5 @@ output "network_name" {
 
 output "lb_subnet_name" {
     description = "Name of the subnet where load balancer would be"
-    value = google_compute_subnetwork.subnet["subnet_1"].name
+    value = google_compute_subnetwork.subnet["subnet-1"].name
 }
