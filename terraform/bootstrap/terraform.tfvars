@@ -7,14 +7,14 @@ region = "europe-west2"
 #-------------------------------------------------
 account_id = "terraform-service-account"
 
-tf_serv_account_roles = toset([
+tf_serv_account_roles = [
     "roles/compute.admin",
     "roles/artifactregistry.writer",
     "roles/artifactregistry.reader",
     "roles/storage.objectAdmin",
     "roles/iam.serviceAccountUser"
 
-])
+]
 
 #-------------------------------------------------
 # Artifact Registry
