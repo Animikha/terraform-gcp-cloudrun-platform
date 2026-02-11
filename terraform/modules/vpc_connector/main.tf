@@ -1,4 +1,4 @@
-resource "googles_vpc_access_connector" "default" {
+resource "google_vpc_access_connector" "default" {
     name = var.vpc_connector_name
     region = var.region
     project = var.project
