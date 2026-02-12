@@ -37,9 +37,9 @@ bootstrap_infra_deploy:
   script:
     - cd terraform/bootstrap
     - terraform init
-    - terraform plan
     - gcloud auth list 
     - gcloud config list
+    - terraform plan
     - terraform apply -auto-approve
  
 dev_infra_deploy:
