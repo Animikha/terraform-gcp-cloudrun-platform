@@ -32,7 +32,7 @@ connector_subnet_cidr = "10.10.8.0/28"
 #---------------------------------
 services = {
     frontend = {
-        image = "nginx:latest"
+        image = "us-docker.pkg.dev/cloudrun/container/hello"
         cpu = "1"
         memory = "512Mi"
         min_instances = 1
@@ -45,7 +45,7 @@ services = {
     }
 
     auth = {
-        image = "nginx:latest"
+        image = "us-docker.pkg.dev/cloudrun/container/hello"
         cpu = "1"
         memory = "512Mi"
         min_instances = 1
@@ -58,7 +58,7 @@ services = {
     }
 
     api = {
-        image = "nginx:latest"
+        image = "us-docker.pkg.dev/cloudrun/container/hello"
         cpu = "1"
         memory = "512Mi"
         min_instances = 1
