@@ -46,7 +46,6 @@ variable "connector_subnet_cidr" {
 #---------------------------------
 variable "services" {
     type = map(object({
-        name = string
         image = string
         cpu = string
         memory = string

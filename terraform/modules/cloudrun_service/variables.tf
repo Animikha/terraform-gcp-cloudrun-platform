@@ -8,7 +8,6 @@ variable "region" {
 
 variable "services" {
     type = map(object({
-        name = string
         image = string
         cpu = string
         memory = string
