@@ -37,7 +37,7 @@ resource "google_compute_url_map" "internal_url_map" {
             for_each = var.lb_routes
             content {
                 paths = path_rule.value.paths
-                service = google_compute_backend_service.backends[each.key].id
+                service = google_compute_backend_service.backends[path_rule.key].id
             }
         }
     }
