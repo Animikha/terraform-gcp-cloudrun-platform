@@ -4,6 +4,8 @@ resource "google_cloud_run_v2_service" "services" {
   name     = each.key
   location = var.region
   project  = var.project
+
+  deletion_protection = false
  
   template {
     containers {
@@ -40,4 +42,4 @@ resource "google_cloud_run_v2_service" "services" {
   }
  
   ingress = "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
-}
+} 
