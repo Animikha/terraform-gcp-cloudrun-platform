@@ -48,4 +48,4 @@ dev_infra_deploy:
     - terraform init
     - terraform plan
     - terraform apply -auto-approve
- 
+
