@@ -46,9 +46,9 @@ dev_infra_deploy:
   script:
     - cd terraform/environments/dev
     - terraform init
-    - terraform state rm module.cloudrun_service.google_cloud_run_v2_service.services["api"]
-    - terraform state rm module.cloudrun_service.google_cloud_run_v2_service.services["frontend"]
-    - terraform state rm module.cloudrun_service.google_cloud_run_v2_service.services["auth"]
+    - terraform state rm 'module.cloudrun_service.google_cloud_run_v2_service.services["api"]'
+    - terraform state rm 'module.cloudrun_service.google_cloud_run_v2_service.services["frontend"]'
+    - terraform state rm 'module.cloudrun_service.google_cloud_run_v2_service.services["auth"]'
     # - terraform init
     # - terraform plan
     # - terraform apply -auto-approve
