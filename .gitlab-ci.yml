@@ -45,6 +45,7 @@ dev_infra_deploy:
   extends: .default_terraform
   script:
     - cd terraform/environments/dev
+    - terraform init
     - terraform state rm module.cloudrun_service.google_cloud_run_v2_service.services["api"]
     - terraform state rm module.cloudrun_service.google_cloud_run_v2_service.services["frontend"]
     - terraform state rm module.cloudrun_service.google_cloud_run_v2_service.services["auth"]
