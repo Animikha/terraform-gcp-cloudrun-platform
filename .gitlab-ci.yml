@@ -1,6 +1,6 @@
 stages:
   #- backend_infra_deploy
-  #- bootstrap_infra_deploy
+  - bootstrap_infra_deploy
   - dev_infra_deploy
  
 workflow:
@@ -31,14 +31,14 @@ workflow:
 #     - terraform plan
 #     - terraform apply -auto-approve
  
-# bootstrap_infra_deploy:
-#   stage: bootstrap_infra_deploy
-#   extends: .default_terraform
-#   script:
-#     - cd terraform/bootstrap
-#     - terraform init
-#     - terraform plan
-#     - terraform apply -auto-approve
+bootstrap_infra_deploy:
+  stage: bootstrap_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
  
 dev_infra_deploy:
   stage: dev_infra_deploy
@@ -46,10 +46,6 @@ dev_infra_deploy:
   script:
     - cd terraform/environments/dev
     - terraform init
-    - terraform state rm 'module.cloudrun_service.google_cloud_run_v2_service.services["api"]'
-    - terraform state rm 'module.cloudrun_service.google_cloud_run_v2_service.services["frontend"]'
-    - terraform state rm 'module.cloudrun_service.google_cloud_run_v2_service.services["auth"]'
-    # - terraform init
-    # - terraform plan
-    # - terraform apply -auto-approve
+    - terraform plan
+    - terraform apply -auto-approve
  
