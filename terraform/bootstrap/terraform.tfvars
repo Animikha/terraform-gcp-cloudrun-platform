@@ -12,7 +12,9 @@ tf_serv_account_roles = [
     "roles/artifactregistry.writer",
     "roles/artifactregistry.reader",
     "roles/storage.objectAdmin",
-    "roles/iam.serviceAccountUser"
+    "roles/iam.serviceAccountUser",
+    "roles/vpcaccess.admin",
+    "roles/run.admin"
 
 ]
 
