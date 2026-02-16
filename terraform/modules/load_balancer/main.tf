@@ -47,7 +47,7 @@ resource "google_compute_region_url_map" "internal_url_map" {
 resource "google_compute_region_target_http_proxy" "internal_proxy" {
     name = var.lb_http_proxy_name
     region   = var.region
-    url_map = google_compute_url_map.internal_url_map.id
+    url_map = google_compute_region_url_map.internal_url_map.id
 }
 
 resource "google_compute_forwarding_rule" "internal_lb" {
