@@ -43,8 +43,9 @@ resource "google_compute_url_map" "internal_url_map" {
     }
 }
 
-resource "google_compute_target_http_proxy" "internal_proxy" {
+resource "google_compute_region_target_http_proxy" "internal_proxy" {
     name = var.lb_http_proxy_name
+    region   = var.region
     url_map = google_compute_url_map.internal_url_map.id
 }
 
@@ -54,7 +55,7 @@ resource "google_compute_forwarding_rule" "internal_lb" {
     load_balancing_scheme = "INTERNAL_MANAGED"
     ip_protocol = "TCP"
     port_range = "80"
-    target = google_compute_target_http_proxy.internal_proxy.id
+    target = google_compute_region_target_http_proxy.internal_proxy.id
     network = var.vpc_self_link
     subnetwork = var.lb_subnet_self_link
     ip_address = google_compute_address.lb_ip.address

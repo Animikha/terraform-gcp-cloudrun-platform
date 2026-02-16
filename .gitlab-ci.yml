@@ -1,6 +1,6 @@
 stages:
   #- backend_infra_deploy
-  - bootstrap_infra_deploy
+  #- bootstrap_infra_deploy
   - dev_infra_deploy
  
 workflow:
@@ -46,7 +46,6 @@ dev_infra_deploy:
   script:
     - cd terraform/environments/dev
     - terraform init
-    - terraform state rm 'module.load_balancer.google_compute_target_http_proxy.internal_proxy'
-    # - terraform plan
-    # - terraform apply -auto-approve
+    - terraform plan
+    - terraform apply -auto-approve
 
