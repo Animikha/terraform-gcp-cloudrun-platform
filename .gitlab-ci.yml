@@ -39,8 +39,8 @@ bootstrap_infra_deploy:
     - cd terraform/bootstrap
     - terraform init
     - terraform destroy -auto-approve
-    # - terraform plan
-    # - terraform apply -auto-approve
+    - terraform plan
+    - terraform apply -auto-approve
  
 dev_infra_deploy:
   stage: dev_infra_deploy
@@ -48,9 +48,9 @@ dev_infra_deploy:
   script:
     - cd terraform/environments/dev
     - terraform init
-    - terraform destroy -auto-approve
-    # - terraform plan
-    # - terraform apply -auto-approve
+    # - terraform destroy -auto-approve
+    - terraform plan
+    - terraform apply -auto-approve
 
 
 
