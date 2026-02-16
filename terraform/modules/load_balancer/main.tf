@@ -20,8 +20,9 @@ resource "google_compute_backend_service" "backends" {
     }
 }
 
-resource "google_compute_url_map" "internal_url_map" {
-    name = var.lb_url_map_name 
+resource "google_compute_region_url_map" "internal_url_map" {
+    name = var.lb_url_map_name
+    region = var.region
     default_service = google_compute_backend_service.backends["frontend"].id
 
     host_rule {
