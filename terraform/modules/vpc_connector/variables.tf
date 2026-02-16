@@ -10,7 +10,7 @@ variable "vpc_connector_name" {
     type = string
 }
 
-variable "vpc_name" {
+variable "vpc_self_link" {
     type = string
 }
 

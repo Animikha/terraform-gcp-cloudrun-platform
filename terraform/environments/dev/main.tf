@@ -24,7 +24,7 @@ module "vpc_connector" {
   project     = var.project
   region      = var.region
   vpc_connector_name = var.vpc_connector_name
-  vpc_name = module.vpc.network_name
+  vpc_self_link = module.vpc.vpc_self_link
   connector_subnet_cidr = var.connector_subnet_cidr
   depends_on = [ module.vpc ]
 }
