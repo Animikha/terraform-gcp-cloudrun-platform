@@ -56,6 +56,7 @@ resource "google_compute_forwarding_rule" "internal_lb" {
     port_range = "80"
     target = google_compute_target_http_proxy.internal_proxy.id
     network = var.vpc_self_link
+    subnetwork = var.lb_subnet_self_link
     ip_address = google_compute_address.lb_ip.address
 }
 
