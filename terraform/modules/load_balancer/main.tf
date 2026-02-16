@@ -50,12 +50,12 @@ resource "google_compute_target_http_proxy" "internal_proxy" {
 
 resource "google_compute_forwarding_rule" "internal_lb" {
     name = var.lb_forwarding_rule_name
+    region = var.region
     load_balancing_scheme = "INTERNAL_MANAGED"
     ip_protocol = "TCP"
     port_range = "80"
     target = google_compute_target_http_proxy.internal_proxy.id
     network = var.vpc_name
-    subnetwork = var.lb_subnet_name 
     ip_address = google_compute_address.lb_ip.address
 }
 
