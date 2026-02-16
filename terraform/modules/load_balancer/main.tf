@@ -9,9 +9,10 @@ resource "google_compute_region_network_endpoint_group" "cloud_run_negs" {
     }
 }
 
-resource "google_compute_backend_service" "backends" {
+resource "google_compute_region_backend_service" "backends" {
     for_each = google_compute_region_network_endpoint_group.cloud_run_negs
     name = "${each.key}-backend"
+    region = var.region
     protocol = "HTTP"
     load_balancing_scheme = "INTERNAL_MANAGED"
 
@@ -23,7 +24,7 @@ resource "google_compute_backend_service" "backends" {
 resource "google_compute_region_url_map" "internal_url_map" {
     name = var.lb_url_map_name
     region = var.region
-    default_service = google_compute_backend_service.backends["frontend"].id
+    default_service = google_compute_region_backend_service.backends["frontend"].id
 
     host_rule {
         hosts = ["*"]
@@ -32,13 +33,13 @@ resource "google_compute_region_url_map" "internal_url_map" {
 
     path_matcher {
         name = "services"
-        default_service = google_compute_backend_service.backends["frontend"].id
+        default_service = google_compute_region_backend_service.backends["frontend"].id
 
         dynamic path_rule {
             for_each = var.lb_routes
             content {
                 paths = path_rule.value.paths
-                service = google_compute_backend_service.backends[path_rule.key].id
+                service = google_compute_region_backend_service.backends[path_rule.key].id
             }
         }
     }
