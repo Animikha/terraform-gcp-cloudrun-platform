@@ -1,6 +1,6 @@
 stages:
   #- backend_infra_deploy
-  #- bootstrap_infra_deploy
+  - bootstrap_infra_deploy
   - dev_infra_deploy
  
 workflow:
@@ -31,14 +31,14 @@ workflow:
 #     - terraform plan
 #     - terraform apply -auto-approve
  
-# bootstrap_infra_deploy:
-#   stage: bootstrap_infra_deploy
-#   extends: .default_terraform
-#   script:
-#     - cd terraform/bootstrap
-#     - terraform init
-#     - terraform plan
-#     - terraform apply -auto-approve
+bootstrap_infra_deploy:
+  stage: bootstrap_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
  
 dev_infra_deploy:
   stage: dev_infra_deploy
