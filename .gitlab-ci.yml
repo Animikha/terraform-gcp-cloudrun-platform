@@ -2,6 +2,7 @@ stages:
   #- backend_infra_deploy
   - bootstrap_infra_deploy
   - dev_infra_deploy
+
  
 workflow:
   rules:
@@ -37,8 +38,9 @@ bootstrap_infra_deploy:
   script:
     - cd terraform/bootstrap
     - terraform init
-    - terraform plan
-    - terraform apply -auto-approve
+    - terraform destroy
+    # - terraform plan
+    # - terraform apply -auto-approve
  
 dev_infra_deploy:
   stage: dev_infra_deploy
@@ -46,6 +48,9 @@ dev_infra_deploy:
   script:
     - cd terraform/environments/dev
     - terraform init
-    - terraform plan
-    - terraform apply -auto-approve
+    - terraform destroy
+    # - terraform plan
+    # - terraform apply -auto-approve
+
+
 
