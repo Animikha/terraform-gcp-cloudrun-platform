@@ -27,12 +27,12 @@ variable "lb_forwarding_rule_name" {
     type = string
 }
 
-variable "vpc_name" {
+variable "vpc_self_link" {
     description = "Name of vpc"
     type = string
 }
 
-variable "lb_subnet_name" {
+variable "lb_subnet_self_link" {
     description = "Name of subnet which would have the load balancer"
     type = string
 }

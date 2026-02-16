@@ -90,5 +90,5 @@ lb_routes = {
 
 lb_url_map_name = "lb-url-map-tgcp"
 lb_http_proxy_name = "http-proxy-tgcp"
-lb_forwarding_rule_name = "lb-forwarding-rul-tgcp"
+lb_forwarding_rule_name = "lb-forwarding-rule-tgcp"
 lb_ip_name = "lb-ip-tgcp"

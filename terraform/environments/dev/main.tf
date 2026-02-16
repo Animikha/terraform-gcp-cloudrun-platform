@@ -46,8 +46,8 @@ module "load_balancer" {
   lb_url_map_name = var.lb_url_map_name 
   lb_http_proxy_name = var.lb_http_proxy_name
   lb_forwarding_rule_name = var.lb_forwarding_rule_name
-  vpc_name = module.vpc.network_name
-  lb_subnet_name = module.vpc.lb_subnet_name
+  vpc_self_link = module.vpc.vpc_self_link
+  lb_subnet_self_link = module.vpc.lb_subnet_self_link
   lb_ip_name = var.lb_ip_name
   depends_on = [module.cloudrun_service, module.vpc_connector, module.vpc] 
 }

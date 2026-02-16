@@ -55,13 +55,13 @@ resource "google_compute_forwarding_rule" "internal_lb" {
     ip_protocol = "TCP"
     port_range = "80"
     target = google_compute_target_http_proxy.internal_proxy.id
-    network = var.vpc_name
+    network = var.vpc_self_link
     ip_address = google_compute_address.lb_ip.address
 }
 
 resource "google_compute_address" "lb_ip" {
     name = var.lb_ip_name
     region = var.region
-    subnetwork = var.lb_subnet_name 
+    subnetwork = var.lb_subnet_self_link
     address_type = "INTERNAL"
 }
