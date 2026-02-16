@@ -46,6 +46,7 @@ dev_infra_deploy:
   script:
     - cd terraform/environments/dev
     - terraform init
-    - terraform plan
-    - terraform apply -auto-approve
+    - terrafprm state rm 'google_compute_target_http_proxy.internal_proxy'
+    # - terraform plan
+    # - terraform apply -auto-approve
 
