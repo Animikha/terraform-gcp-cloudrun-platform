@@ -12,7 +12,7 @@ resource "google_compute_network" "vpc" {
 }
 
 #---------------------------------------------
-# Subnets
+# Workload Subnets
 #----------------------------------------------
 
 resource "google_compute_subnetwork" "subnet" {
@@ -25,6 +25,19 @@ resource "google_compute_subnetwork" "subnet" {
 
   # Alllow access to Google APIs from VMs without external IPs
   private_ip_google_access = true
+}
+
+#---------------------------------------------
+# Proxy-only Subnet
+#----------------------------------------------
+resource "google_compute_subnetwork" "proxy_only_subnet" {
+  name          = "proxy-only-subnet-tgcp"
+  region        = "europe-west2"
+  network = google_compute_network.vpc.id
+  ip_cidr_range = "10.10.3.0/24"  # unused CIDR
+ 
+  purpose = "INTERNAL_HTTPS_LOAD_BALANCER"
+  role    = "ACTIVE"
 }
 
 #---------------------------------------------
