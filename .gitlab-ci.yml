@@ -1,7 +1,7 @@
 stages:
   #- backend_infra_deploy
-  # - bootstrap_infra_deploy
-  # - dev_infra_deploy
+  - bootstrap_infra_deploy
+  - dev_infra_deploy
   - dev_infra_destroy
   - bootstrap_infra_destroy
 
@@ -34,26 +34,30 @@ workflow:
 #     - terraform plan
 #     - terraform apply -auto-approve
  
-# bootstrap_infra_deploy:
-#   stage: bootstrap_infra_deploy
-#   extends: .default_terraform
-#   script:
-#     - cd terraform/bootstrap
-#     - terraform init
-#     - terraform plan
-#     - terraform apply -auto-approve
+bootstrap_infra_deploy:
+  stage: bootstrap_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
  
-# dev_infra_deploy:
-#   stage: dev_infra_deploy
-#   extends: .default_terraform
-#   script:
-#     - cd terraform/environments/dev
-#     - terraform init
-#     - terraform plan
-#     - terraform apply -auto-approve
+dev_infra_deploy:
+  stage: dev_infra_deploy
+  extends: .default_terraform
+  script:
+    - cd terraform/environments/dev
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
 
 dev_infra_destroy:
   stage: dev_infra_destroy
+  rules:
+    - when: manual
+      allow_failure: false
+
   extends: .default_terraform
   script:
     - cd terraform/environments/dev
@@ -62,6 +66,10 @@ dev_infra_destroy:
 
 bootstrap_infra_destroy:
   stage: bootstrap_infra_destroy
+  rules:
+    - when: manual
+      allow_failure: false
+
   extends: .default_terraform
   script:
     - cd terraform/bootstrap
