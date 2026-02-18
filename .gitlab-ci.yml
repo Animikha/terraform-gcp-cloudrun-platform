@@ -31,10 +31,10 @@ backend_infra_deploy:
   script:
     - |
       if gsutil ls -b gs://tf-state-bootstrap-tgcp > /dev/null 2>&1; then
-        echo "Backend already exists — skipping bootstrap ✅"
+        echo "Backend already exists! Going to next stage ✅"
         exit 0
       else
-        echo "Backend does not exist — creating with Terraform..."
+        echo "Backend does not exist! Creating with Terraform..."
         cd terraform/backend_infra
         terraform init
         terraform plan
