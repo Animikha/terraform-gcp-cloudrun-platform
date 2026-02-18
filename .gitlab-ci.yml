@@ -1,5 +1,5 @@
 stages:
-  #- backend_infra_deploy
+  - backend_infra_deploy
   - bootstrap_infra_deploy
   - dev_infra_deploy
   - dev_infra_destroy
@@ -24,15 +24,24 @@ workflow:
     - echo "$GCLOUD_KEY"| base64 -d > $CI_PROJECT_DIR/gcp-key.json
     - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
     - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+    - gcloud config set project "$PROJECT_ID"
  
-# backend_infra_deploy:
-#   stage: backend_infra_deploy
-#   extends: .default_terraform
-#   script:
-#     - cd terraform/backend_infra
-#     - terraform init
-#     - terraform plan
-#     - terraform apply -auto-approve
+backend_infra_deploy:
+  stage: backend_infra_deploy
+  extends: .default_terraform
+  script:
+    - |
+      if gsutil ls -b gs://tf-state-bootstrap-tgcp > /dev/null 2>&1; then
+        echo "Backend already exists — skipping bootstrap ✅"
+        exit 0
+      else
+        echo "Backend does not exist — creating with Terraform..."
+        cd terraform/backend_infra
+        terraform init
+        terraform plan
+        terraform apply -auto-approve
+      fi
+
  
 bootstrap_infra_deploy:
   stage: bootstrap_infra_deploy
