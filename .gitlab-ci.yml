@@ -24,7 +24,6 @@ workflow:
     - echo "$GCLOUD_KEY"| base64 -d > $CI_PROJECT_DIR/gcp-key.json
     - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
     - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-    - gcloud config set project "$PROJECT_ID"
  
 backend_infra_deploy:
   stage: backend_infra_deploy
