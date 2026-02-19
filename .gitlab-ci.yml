@@ -13,13 +13,8 @@ workflow:
     - when: never
  
 .default_terraform:
-  image: google/cloud-sdk:latest
+  image: registry.gitlab.com/animikha/terraform-gcp-cloudrun-platform/base-image:latest
   before_script:
-    - apt-get update && apt-get install -y wget unzip
-    - wget https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
-    - unzip terraform_1.9.5_linux_amd64.zip -d /usr/local/bin/
-    - terraform version
- 
     # Auth
     - echo "$GCLOUD_KEY"| base64 -d > $CI_PROJECT_DIR/gcp-key.json
     - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
