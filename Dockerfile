@@ -12,3 +12,6 @@ RUN apt-get update && apt-get install -y unzip wget \
   && wget https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip \
   && unzip terraform_1.9.5_linux_amd64.zip -d /usr/local/bin/ \
   && terraform version
+
+RUN mkdir -p /root/.terraform.d/plugin-cache \
+&& echo 'plugin_cache_dir = "/root/.terraform.d/plugin-cache"' > /root/.terraformrc
