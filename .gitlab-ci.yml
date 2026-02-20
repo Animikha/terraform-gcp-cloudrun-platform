@@ -14,18 +14,20 @@ workflow:
  
 .default_terraform:
   image: registry.gitlab.com/animikha/terraform-gcp-cloudrun-platform/base-image:latest
-
+ 
+  variables:
+    TF_PLUGIN_CACHE_DIR: "$CI_PROJECT_DIR/.terraform.d/plugin-cache"
+ 
+  before_script:
+    - mkdir -p "$TF_PLUGIN_CACHE_DIR"
+    - echo "$GCLOUD_KEY" | base64 -d > $CI_PROJECT_DIR/gcp-key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
+    - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+ 
   cache:
     key: terraform-cache
     paths:
-      - /root/.terraform.d/plugin-cache
-      - .terraform/
-
-  before_script:
-    # Auth
-    - echo "$GCLOUD_KEY"| base64 -d > $CI_PROJECT_DIR/gcp-key.json
-    - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
-    - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+      - .terraform.d/plugin-cache/
  
 backend_infra_deploy:
   stage: backend_infra_deploy
