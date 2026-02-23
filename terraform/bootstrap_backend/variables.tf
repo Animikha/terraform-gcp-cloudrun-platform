@@ -6,6 +6,6 @@ variable "region" {
     type = string
 }
 
-variable "backends" {
-    type = set(string)
+variable "bucket_name" {
+    type = string
 }
