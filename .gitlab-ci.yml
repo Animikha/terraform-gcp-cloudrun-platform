@@ -68,6 +68,9 @@ dev_backend_deploy:
 bootstrap_infra_deploy:
   stage: bootstrap_infra_deploy
   extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
   script:
     - cd terraform/bootstrap
     - terraform init
@@ -78,6 +81,9 @@ bootstrap_infra_deploy:
 dev_infra_deploy:
   stage: dev_infra_deploy
   extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
   script:
     - cd terraform/environments/dev
     - terraform init
