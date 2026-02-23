@@ -34,6 +34,9 @@ workflow:
 bootstrap_backend_deploy:
   stage: bootstrap_backend_deploy
   extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
   script:
     - |
       if gsutil ls -b gs://tf-state-bootstrap-tgcp > /dev/null 2>&1; then
@@ -51,6 +54,9 @@ bootstrap_backend_deploy:
 dev_backend_deploy:
   stage: dev_backend_deploy
   extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
   script:
     - |
       if gsutil ls -b gs://tf-state-dev-tgcp > /dev/null 2>&1; then
