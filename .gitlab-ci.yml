@@ -5,8 +5,10 @@ stages:
   - dev_infra_deploy
   - dev_infra_destroy
   - bootstrap_infra_destroy
+  - dev_backend_destroy
+  - bootstrap_backend_destroy
+  
 
- 
 workflow:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -119,5 +121,26 @@ bootstrap_infra_destroy:
     - cd terraform/bootstrap
     - terraform init
     - terraform destroy -auto-approve
+
+dev_backend_destroy:
+  stage: dev_backend_destroy
+  rules:
+    - when: manual
+      allow_failure: false
+  extends: .default_terraform
+  script:
+    - echo "Destroying dev backend bucket ⚠️"
+    - gsutil rm -r gs://tf-state-dev-tgcp
+
+
+bootstrap_backend_destroy:
+  stage: bootstrap_backend_destroy
+  rules:
+    - when: manual
+      allow_failure: false
+  extends: .default_terraform
+  script:
+    - echo "Destroying bootstrap backend bucket ⚠️"
+    - gsutil rm -r gs://tf-state-bootstrap-tgcp
 
 
