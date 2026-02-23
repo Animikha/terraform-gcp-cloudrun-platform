@@ -1,5 +1,6 @@
 stages:
-  - backend_infra_deploy
+  - bootstrap_backend_deploy
+  - dev_backend_deploy
   - bootstrap_infra_deploy
   - dev_infra_deploy
   - dev_infra_destroy
@@ -28,9 +29,10 @@ workflow:
     key: terraform-cache
     paths:
       - .terraform.d/plugin-cache/
- 
-backend_infra_deploy:
-  stage: backend_infra_deploy
+
+
+bootstrap_backend_deploy:
+  stage: bootstrap_backend_deploy
   extends: .default_terraform
   script:
     - |
@@ -39,7 +41,24 @@ backend_infra_deploy:
         exit 0
       else
         echo "BACKEND DOES NOT EXIST!!! CREATING WITH TERRAFORM..."
-        cd terraform/backend_infra
+        cd terraform/bootstrap_backend
+        terraform init
+        terraform plan
+        terraform apply -auto-approve
+      fi
+
+
+dev_backend_deploy:
+  stage: dev_backend_deploy
+  extends: .default_terraform
+  script:
+    - |
+      if gsutil ls -b gs://tf-state-dev-tgcp > /dev/null 2>&1; then
+        echo "BACKEND ALREADY EXISTS!!! GOING TO NEXT STAGE ✅"
+        exit 0
+      else
+        echo "BACKEND DOES NOT EXIST!!! CREATING WITH TERRAFORM..."
+        cd terraform/dev_backend
         terraform init
         terraform plan
         terraform apply -auto-approve
@@ -54,7 +73,8 @@ bootstrap_infra_deploy:
     - terraform init
     - terraform plan
     - terraform apply -auto-approve
- 
+
+
 dev_infra_deploy:
   stage: dev_infra_deploy
   extends: .default_terraform
@@ -64,25 +84,25 @@ dev_infra_deploy:
     - terraform plan
     - terraform apply -auto-approve
 
+
 dev_infra_destroy:
   stage: dev_infra_destroy
+  extends: .default_terraform
   rules:
     - when: manual
       allow_failure: false
-
-  extends: .default_terraform
   script:
     - cd terraform/environments/dev
     - terraform init
     - terraform destroy -auto-approve
 
+
 bootstrap_infra_destroy:
   stage: bootstrap_infra_destroy
+  extends: .default_terraform
   rules:
     - when: manual
       allow_failure: false
-
-  extends: .default_terraform
   script:
     - cd terraform/bootstrap
     - terraform init
