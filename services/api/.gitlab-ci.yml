@@ -69,7 +69,7 @@ build:
 
   script:
     - pip install flask
-    - python -m py_compile .
+    - python -m py_compile app.py
     - ls -lah .
   artifacts:
     paths:
