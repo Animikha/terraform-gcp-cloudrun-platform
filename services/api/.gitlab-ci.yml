@@ -61,7 +61,7 @@ infra_check:
 
 build:
   stage: build
-  image: git:python:3.11-slim
+  image: python:3.11-slim
   before_script:
     - git clean -ffdx
     - git reset --hard
