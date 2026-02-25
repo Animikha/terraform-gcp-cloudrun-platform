@@ -27,6 +27,13 @@ variables:
   VERSION_PREFIX: "1.0"
 
 
+authentication:
+  stage: authentication
+  script:
+    - echo "$GCLOUD_KEY" | base64 -d > gcloud-key.json
+  artifacts:
+    paths:
+      - gcloud-key.json
 
 infra_check:
   stage: infra_check
