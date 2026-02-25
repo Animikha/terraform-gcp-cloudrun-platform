@@ -8,7 +8,6 @@ stages:
   - dev_backend_destroy
   - bootstrap_backend_destroy
   
-
 workflow:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -50,7 +49,7 @@ bootstrap_backend_deploy:
         terraform init
         terraform plan
         terraform apply -auto-approve
-     fi
+      fi
 
 
 bootstrap_infra_deploy:
