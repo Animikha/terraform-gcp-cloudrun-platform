@@ -64,17 +64,6 @@ bootstrap_infra_deploy:
     - terraform plan
     - terraform apply -auto-approve
 
-build: 
-  stage: build
-  image: python:3.11-slim
-  before_script:
-    - git clean -ffx
-    - git reset --hard
-  script:
-    - pip install flask
-    - python-m py_compile app.py
-    - ls -lah .
-
 dev_backend_deploy:
   stage: dev_backend_deploy
   extends: .default_terraform
