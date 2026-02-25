@@ -61,10 +61,12 @@ infra_check:
 
 build:
   stage: build
-  image: python:3.11-slim
+  image: git:python:3.11-slim
   before_script:
     - git clean -ffdx
     - git reset --hard
+    - apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
   script:
     - pip install flask
     - python -m py_compile app.py
