@@ -1,7 +1,149 @@
 stages:
+  - authentication
+  - infra_check
   - build
   - versioning
-  - authentication
   - docker_build
   - deploy
   - version_commit
+
+variables:
+  GIT_STRATEGY: clone
+  GIT_CLEAN_FLAGS: -ffdx
+  # ----GCP Region--------------------
+  GCP_REGION: "europe-west2"
+
+  # ----- Cloud / Image / Deployment -----
+  SERVICE_NAME: "frontend"
+
+  # Artifact Registry host & repo
+  GAR_HOST: "europe-west2-docker.pkg.dev"
+  GAR_REPO: "fromtend"
+
+  # --------VPC Connector-------------------
+  VPC_CONNECTOR: "vpc-connector-tgcp"
+
+  # Version prefix for incremental patching
+  VERSION_PREFIX: "1.0"
+
+
+
+infra_check:
+  stage: infra_check
+  image: google/cloud-sdk:latest
+  dependencies:
+    - authentication
+  script:
+    - gcloud auth activate-service-account --key-file=gcloud-key.json
+    - gcloud config set project "$GCP_PROJECT_ID"
+ 
+    - |
+      if ! gcloud run services describe "$SERVICE_NAME" --region "$GCP_REGION" >/dev/null 2>&1; then
+        echo "❌ Cloud Run service '$SERVICE_NAME' does not exist."
+        echo "👉 Please run the Terraform infra pipeline first."
+        exit 1
+      fi
+ 
+    - |
+      if ! gcloud artifacts repositories describe "$GAR_REPO" \
+           --location="$GCP_REGION" >/dev/null 2>&1; then
+        echo "❌ Artifact Registry repo '$GAR_REPO' does not exist."
+        echo "👉 Please run the Terraform infra pipeline first."
+        exit 1
+      fi
+
+build:
+  stage: build
+  image: python:3.11-slim
+  before_script:
+    - git clean -ffdx
+    - git reset --hard
+  script:
+    - pip install flask
+    - python -m py_compile app.py
+    - ls -lah .
+  artifacts:
+    paths:
+      - app.py
+      - Dockerfile
+    expire_in: 1 week
+
+
+docker_build:
+  stage: docker_build
+  rules:
+    - when: manual
+      allow_failure: false
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  dependencies:
+    - versioning
+    - build
+    - authentication
+  variables:
+    GOOGLE_APPLICATION_CREDENTIALS: /kaniko/service-account.json
+  before_script:
+    - mkdir -p /kaniko/.docker
+    - cp gcloud-key.json /kaniko/service-account.json
+    - rm -rf /cache/* || true
+ 
+    # GitLab registry auth
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"username\":\"${CI_REGISTRY_USER}\",\"password\":\"${CI_REGISTRY_PASSWORD}\"}}}" > /kaniko/.docker/config.json
+ 
+  script:
+    - IMAGE_GITLAB="${CI_REGISTRY_IMAGE}/${SERVICE_NAME}:${BUILD_VERSION}"
+    - IMAGE_GAR="${GAR_HOST}/${GCP_PROJECT_ID}/${GAR_REPO}/${SERVICE_NAME}:${BUILD_VERSION}"
+ 
+    - echo "Pushing images:"
+    - echo " - $IMAGE_GITLAB"
+    - echo " - $IMAGE_GAR"
+ 
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_GITLAB}" --destination "${IMAGE_GAR}" --verbosity info
+
+deploy:
+  stage: deploy
+  rules:
+    - when: manual
+      allow_failure: false
+  image: google/cloud-sdk:latest
+  dependencies:
+    - versioning
+    - authentication
+  script:
+    - gcloud auth activate-service-account --key-file=gcloud-key.json
+    - gcloud config set project "$GCP_PROJECT_ID"
+ 
+    - IMAGE_GAR="${GAR_HOST}/${GCP_PROJECT_ID}/${GAR_REPO}/${SERVICE_NAME}:${BUILD_VERSION}"
+ 
+    - echo "Deploying ${IMAGE_GAR} → Cloud Run (${SERVICE_NAME})"
+ 
+    - >
+      gcloud run deploy "${SERVICE_NAME}"
+      --image "${IMAGE_GAR}"
+      --region "${GCP_REGION}"
+      --platform managed
+      --ingress internal-and-cloud-load-balancing
+      --vpc-connector="${VPC_CONNECTOR}"
+      --vpc-egress all-traffic
+      --quiet
+
+version_commit:
+  stage: version_commit
+  dependencies:
+    - versioning
+  cache:
+    key: "version-file-$CI_COMMIT_REF_SLUG"
+    paths:
+      - version.txt
+  script:
+    - BUILD_VERSION=$(cat version.txt.temp)
+    - echo "$BUILD_VERSION" > version.txt
+    - cat version.txt
+  artifacts:
+    paths:
+      - version.txt
+    expire_in: 1 month
+ 
+
+ 
