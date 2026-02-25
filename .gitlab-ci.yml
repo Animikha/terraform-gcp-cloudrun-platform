@@ -1,7 +1,15 @@
 stages:
   - bootstrap_backend_deploy
-  - dev_backend_deploy
   - bootstrap_infra_deploy
+  
+  - build
+  - versioning
+  - authentication
+  - docker_build
+  - deploy
+  - version_commit
+
+  - dev_backend_deploy
   - dev_infra_deploy
   - dev_infra_destroy
   - bootstrap_infra_destroy
@@ -14,7 +22,7 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
     - when: never
- 
+
 .default_terraform:
   image: registry.gitlab.com/animikha/terraform-gcp-cloudrun-platform/base-image:latest
  
@@ -50,8 +58,20 @@ bootstrap_backend_deploy:
         terraform init
         terraform plan
         terraform apply -auto-approve
-      fi
+     fi
 
+
+bootstrap_infra_deploy:
+  stage: bootstrap_infra_deploy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
 
 dev_backend_deploy:
   stage: dev_backend_deploy
@@ -71,19 +91,6 @@ dev_backend_deploy:
         terraform plan
         terraform apply -auto-approve
       fi
-
- 
-bootstrap_infra_deploy:
-  stage: bootstrap_infra_deploy
-  extends: .default_terraform
-  rules:
-    - when: manual
-      allow_failure: false
-  script:
-    - cd terraform/bootstrap
-    - terraform init
-    - terraform plan
-    - terraform apply -auto-approve
 
 
 dev_infra_deploy:
@@ -142,5 +149,3 @@ bootstrap_backend_destroy:
   script:
     - echo "Destroying bootstrap backend bucket ⚠️"
     - gsutil rm -r gs://tf-state-bootstrap-tgcp
-
-
