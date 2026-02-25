@@ -1,0 +1,7 @@
+stages:
+  - build
+  - versioning
+  - authentication
+  - docker_build
+  - deploy
+  - version_commit

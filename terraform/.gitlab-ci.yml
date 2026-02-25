@@ -1,0 +1,154 @@
+stages:
+  - bootstrap_backend_deploy
+  - bootstrap_infra_deploy
+  - dev_backend_deploy
+  - dev_infra_deploy
+  - dev_infra_destroy
+  - bootstrap_infra_destroy
+  - dev_backend_destroy
+  - bootstrap_backend_destroy
+  
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
+    - when: never
+
+.default_terraform:
+  image: registry.gitlab.com/animikha/terraform-gcp-cloudrun-platform/base-image:latest
+ 
+  variables:
+    TF_PLUGIN_CACHE_DIR: "$CI_PROJECT_DIR/.terraform.d/plugin-cache"
+ 
+  before_script:
+    - mkdir -p "$TF_PLUGIN_CACHE_DIR"
+    - echo "$GCLOUD_KEY" | base64 -d > $CI_PROJECT_DIR/gcp-key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS="$CI_PROJECT_DIR/gcp-key.json"
+    - gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+ 
+  cache:
+    key: terraform-cache
+    paths:
+      - .terraform.d/plugin-cache/
+
+
+bootstrap_backend_deploy:
+  stage: bootstrap_backend_deploy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - |
+      if gsutil ls -b gs://tf-state-bootstrap-tgcp > /dev/null 2>&1; then
+        echo "BACKEND ALREADY EXISTS!!! GOING TO NEXT STAGE ✅"
+        exit 0
+      else
+        echo "BACKEND DOES NOT EXIST!!! CREATING WITH TERRAFORM..."
+        cd terraform/bootstrap_backend
+        terraform init
+        terraform plan
+        terraform apply -auto-approve
+     fi
+
+
+bootstrap_infra_deploy:
+  stage: bootstrap_infra_deploy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
+
+build: 
+  stage: build
+  image: python:3.11-slim
+  before_script:
+    - git clean -ffx
+    - git reset --hard
+  script:
+    - pip install flask
+    - python-m py_compile app.py
+    - ls -lah .
+
+dev_backend_deploy:
+  stage: dev_backend_deploy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - |
+      if gsutil ls -b gs://tf-state-dev-tgcp > /dev/null 2>&1; then
+        echo "BACKEND ALREADY EXISTS!!! GOING TO NEXT STAGE ✅"
+        exit 0
+      else
+        echo "BACKEND DOES NOT EXIST!!! CREATING WITH TERRAFORM..."
+        cd terraform/dev_backend
+        terraform init
+        terraform plan
+        terraform apply -auto-approve
+      fi
+
+
+dev_infra_deploy:
+  stage: dev_infra_deploy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - cd terraform/environments/dev
+    - terraform init
+    - terraform plan
+    - terraform apply -auto-approve
+
+
+dev_infra_destroy:
+  stage: dev_infra_destroy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - cd terraform/environments/dev
+    - terraform init
+    - terraform destroy -auto-approve
+
+
+bootstrap_infra_destroy:
+  stage: bootstrap_infra_destroy
+  extends: .default_terraform
+  rules:
+    - when: manual
+      allow_failure: false
+  script:
+    - cd terraform/bootstrap
+    - terraform init
+    - terraform destroy -auto-approve
+
+dev_backend_destroy:
+  stage: dev_backend_destroy
+  rules:
+    - when: manual
+      allow_failure: false
+  extends: .default_terraform
+  script:
+    - echo "Destroying dev backend bucket ⚠️"
+    - gsutil rm -r gs://tf-state-dev-tgcp
+
+
+bootstrap_backend_destroy:
+  stage: bootstrap_backend_destroy
+  rules:
+    - when: manual
+      allow_failure: false
+  extends: .default_terraform
+  script:
+    - echo "Destroying bootstrap backend bucket ⚠️"
+    - gsutil rm -r gs://tf-state-bootstrap-tgcp
