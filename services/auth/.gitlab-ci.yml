@@ -74,7 +74,32 @@ build:
       - Dockerfile
     expire_in: 1 week
 
+versioning:
+  stage: versioning
+  cache:
+    key: "version-file-$CI_COMMIT_REF_SLUG"
+    paths:
+      - version.txt
+  resource_group: versioning
+  script: |
+    if [ -f version.txt ]; then
+      CURRENT_VERSION=$(cat version.txt)
+      PATCH=$(echo "$CURRENT_VERSION" | cut -d'.' -f3)
+      NEW_PATCH=$((PATCH + 1))
+    else
+      NEW_PATCH=0
+    fi
+ 
+    BUILD_VERSION="${VERSION_PREFIX}.${NEW_PATCH}"
+    echo "BUILD_VERSION=$BUILD_VERSION" > variables.env
+    echo "$BUILD_VERSION" > version.txt.temp
+  artifacts:
+    reports:
+      dotenv: variables.env
+    paths:
+      - version.txt.temp
 
+      
 docker_build:
   stage: docker_build
   rules:
