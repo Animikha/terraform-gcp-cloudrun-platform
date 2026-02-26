@@ -18,13 +18,14 @@ variables:
 
   # Artifact Registry host & repo
   GAR_HOST: "europe-west2-docker.pkg.dev"
-  GAR_REPO: "fromtend"
+  GAR_REPO: "frontend"
 
   # --------VPC Connector-------------------
   VPC_CONNECTOR: "vpc-connector-tgcp"
 
   # Version prefix for incremental patching
   VERSION_PREFIX: "1.0"
+
 
 authentication:
   stage: authentication
@@ -62,16 +63,17 @@ build:
   stage: build
   image: python:3.11-slim
   before_script:
-    - git clean -ffdx
-    - git reset --hard
+    - apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
   script:
     - pip install flask
+    - cd services/frontend
     - python -m py_compile app.py
     - ls -lah .
   artifacts:
     paths:
-      - app.py
-      - Dockerfile
+      - services/frontend/app.py
+      - services/frontend/Dockerfile
     expire_in: 1 week
 
 versioning:
@@ -129,7 +131,7 @@ docker_build:
     - echo " - $IMAGE_GITLAB"
     - echo " - $IMAGE_GAR"
  
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_GITLAB}" --destination "${IMAGE_GAR}" --verbosity info
+    - /kaniko/executor --context "${CI_PROJECT_DIR}/services/frontend" --dockerfile "${CI_PROJECT_DIR}/services/frontend/Dockerfile" --destination "${IMAGE_GITLAB}" --destination "${IMAGE_GAR}" --verbosity info
 
 deploy:
   stage: deploy
