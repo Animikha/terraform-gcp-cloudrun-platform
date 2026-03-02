@@ -28,7 +28,7 @@ deploy_api:
     include:
       - local: services/api/.gitlab-ci.yml
   rules:
-    - if: '$PIPELINE_TARGET == "api"'
+    - if: '$PIPELINE_TARGET == "frontend"'
     - when: never
  
 deploy_auth:
