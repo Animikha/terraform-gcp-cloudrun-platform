@@ -11,7 +11,7 @@ workflow:
     - when: never
 
 variables:
-  PIPELINE_TARGET: "frontend"
+  PIPELINE_TARGET: "infra"
  
 deploy_infra:
   stage: infra
