@@ -79,11 +79,13 @@ build:
 versioning:
   stage: versioning
   cache:
-    key: "version-file-$CI_COMMIT_REF_SLUG"
+    key: "version-file-auth-$CI_COMMIT_REF_SLUG"
     paths:
-      - version.txt
-  resource_group: versioning
+      - services/auth/version.txt
+  resource_group: versioning-auth
   script: |
+    cd services/auth
+    
     if [ -f version.txt ]; then
       CURRENT_VERSION=$(cat version.txt)
       PATCH=$(echo "$CURRENT_VERSION" | cut -d'.' -f3)
@@ -99,7 +101,7 @@ versioning:
     reports:
       dotenv: variables.env
     paths:
-      - version.txt.temp
+      - services/auth/version.txt.temp
 
 docker_build:
   stage: docker_build
@@ -165,17 +167,19 @@ version_commit:
   dependencies:
     - versioning
   cache:
-    key: "version-file-$CI_COMMIT_REF_SLUG"
+    key: "version-file-auth-$CI_COMMIT_REF_SLUG"
     paths:
-      - version.txt
+      - services/auth/version.txt
   script:
+    - cd services/auth
     - BUILD_VERSION=$(cat version.txt.temp)
     - echo "$BUILD_VERSION" > version.txt
     - cat version.txt
   artifacts:
     paths:
-      - version.txt
+      - services/auth/version.txt
     expire_in: 1 month
+ 
  
 
  
