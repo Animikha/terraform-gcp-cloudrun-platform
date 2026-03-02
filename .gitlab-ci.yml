@@ -11,7 +11,7 @@ workflow:
     - when: never
 
 variables:
-  PIPELINE_TARGET: "auth"
+  PIPELINE_TARGET: "frontend"
  
 deploy_infra:
   stage: infra
@@ -28,7 +28,7 @@ deploy_api:
     include:
       - local: services/api/.gitlab-ci.yml
   rules:
-    - if: '$PIPELINE_TARGET == "frontend"'
+    - if: '$PIPELINE_TARGET == "api"'
     - when: never
  
 deploy_auth:
