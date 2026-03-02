@@ -95,7 +95,7 @@ versioning:
     fi
  
     BUILD_VERSION="${VERSION_PREFIX}.${NEW_PATCH}"
-    echo "BUILD_VERSION=$BUILD_VERSION" > variables.env
+    echo "BUILD_VERSION=$BUILD_VERSION" > ../../variables.env
     echo "$BUILD_VERSION" > version.txt.temp
   artifacts:
     reports:
