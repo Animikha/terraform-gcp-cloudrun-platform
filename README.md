@@ -6,10 +6,10 @@ This project demonstrates a fully automated CI/CD pipeline for deploying contain
 
 The infrastructure is provisioned using **Infrastructure as Code (Terraform)**, while each service is independently built, versioned, containerized, and deployed through GitLab pipelines.
 
-The goal of this project is to showcase a completely automated DevOps workflow including:
+The goal of this project is to showcase a complete DevOps workflow including:
 
 * Infrastructure provisioning
-* CI/CD 
+* CI/CD automation
 * Containerized microservices
 * Cloud Run deployment
 * Load balancing and networking
@@ -29,7 +29,7 @@ The goal of this project is to showcase a completely automated DevOps workflow i
 * **Terraform** (Infrastructure as Code)
 * **GitLab CI/CD**
 * **Docker**
-* **Python** (Flask – minimal demo services)
+* **Python** (microservices)
 
 ---
 
@@ -68,18 +68,47 @@ project-root
 │
 ├── services
 │   ├── api
+│   │   ├── app.py
+│   │   ├── Dockerfile
+│   │   └── .gitlab-ci.yml
+│   │
 │   ├── auth
+│   │   ├── app.py
+│   │   ├── Dockerfile
+│   │   └── .gitlab-ci.yml
+│   │
 │   └── frontend
+│       ├── app.py
+│       ├── Dockerfile
+│       └── .gitlab-ci.yml
 │
 ├── terraform
+│   ├── .gitlab-ci.yml
+│   │   └── (Terraform infrastructure pipeline)
+│   │
 │   ├── bootstrap_backend
+│   │   └── (Terraform code for bootstrap state bucket)
+│   │
 │   ├── bootstrap
+│   │   └── (Artifact Registry + IAM service account)
+│   │
 │   ├── dev_backend
+│   │   └── (Terraform state bucket for dev environment)
+│   │
 │   ├── environments
 │   │   └── dev
+│   │       └── (Root Terraform for dev infrastructure)
+│   │
 │   └── modules
+│       ├── artifact_registry
+│       ├── cloudrun_service
+│       ├── iam
+│       ├── load_balancer
+│       ├── vpc
+│       └── vpc_connector
 │
 └── .gitlab-ci.yml
+
 ```
 
 ---
@@ -88,15 +117,15 @@ project-root
 
 The **services** directory contains three independent microservices:
 
-* API
-* Auth
-* Frontend
+- API
+- Auth
+- Frontend
 
 Each service includes:
 
-* `app.py` – Python application
-* `Dockerfile` – Container build configuration
-* `.gitlab-ci.yml` – Service-specific pipeline
+- `app.py` – Python application
+- `Dockerfile` – Container build configuration
+- `.gitlab-ci.yml` – Service-specific pipeline
 
 ### Service Pipeline Stages
 
@@ -122,16 +151,16 @@ The **terraform** module contains the Infrastructure as Code for provisioning al
 
 The Terraform GitLab pipeline includes the following stages:
 
-* bootstrap_backend_deploy
-* bootstrap_infra_deploy
-* dev_backend_deploy
-* dev_infra_deploy
-* dev_infra_destroy
-* bootstrap_infra_destroy
-* dev_backend_destroy
-* bootstrap_backend_destroy
+- bootstrap_backend_deploy
+- bootstrap_infra_deploy
+- dev_backend_deploy
+- dev_infra_deploy
+- dev_infra_destroy
+- bootstrap_infra_destroy
+- dev_backend_destroy
+- bootstrap_backend_destroy
 
-These stages handle creation and destruction of both bootstrap and development infrastructure.
+These stages are all **manual** for increased safety and handles creation and destruction of both bootstrap and development infrastructure.
 
 ---
 
@@ -139,8 +168,8 @@ These stages handle creation and destruction of both bootstrap and development i
 
 ### Backend State Storage
 
-* **bootstrap_backend** – Creates a GCS bucket for storing bootstrap Terraform state
-* **dev_backend** – Creates a GCS bucket for storing development Terraform state
+- **bootstrap_backend** – Creates a GCS bucket for storing bootstrap Terraform state
+- **dev_backend** – Creates a GCS bucket for storing development Terraform state
 
 These backends ensure Terraform state is stored securely and remotely.
 
@@ -150,8 +179,8 @@ These backends ensure Terraform state is stored securely and remotely.
 
 The **bootstrap** module deploys:
 
-* Artifact Registries (one for each service)
-* Service account for infrastructure deployment
+- Artifact Registries (one for each service)
+- Service account for infrastructure deployment
 
 The service account is configured with **least-privilege IAM roles** required to deploy the development infrastructure.
 
@@ -162,18 +191,20 @@ The service account is configured with **least-privilege IAM roles** required to
 Located in:
 
 ```
+
 terraform/environments/dev
+
 ```
 
 This layer deploys:
 
-* VPC network
-* Workload subnets
-* Proxy-only subnet
-* Firewall rules
-* Serverless VPC Connector
-* Cloud Run services
-* HTTP Load Balancer
+- VPC network
+- Workload subnets
+- Proxy-only subnet
+- Firewall rules
+- Serverless VPC Connector
+- Cloud Run services
+- HTTP Load Balancer
 
 ---
 
@@ -182,42 +213,36 @@ This layer deploys:
 Reusable Terraform modules are stored in the `modules` directory.
 
 ### artifact_registry
-
 Creates three Artifact Registries used for storing Docker images of the services.
 
 ### iam
-
 Creates a service account and assigns least-privilege roles required for infrastructure deployment.
 
 ### vpc
-
 Creates:
 
-* VPC network
-* Workload subnets
-* Proxy-only subnet
-* Firewall rules
+- VPC network
+- Workload subnets
+- Proxy-only subnet
+- Firewall rules
 
 ### vpc_connector
-
 Deploys a **Serverless VPC Connector** to connect Cloud Run services to the VPC.
 
 ### cloudrun_service
-
 Creates three Cloud Run services using a placeholder container image.
 
 ### load_balancer
-
 Configures an HTTP Load Balancer that routes traffic to the Cloud Run services.
 
 Resources created include:
 
-* Network Endpoint Groups (NEGs)
-* Backend services
-* URL map
-* HTTP proxy
-* Forwarding rule
-* Reserved IP address
+- Network Endpoint Groups (NEGs)
+- Backend services
+- URL map
+- HTTP proxy
+- Forwarding rule
+- Reserved IP address
 
 ---
 
@@ -227,24 +252,29 @@ The root `.gitlab-ci.yml` orchestrates the deployment workflow.
 
 ### Pipeline Stages
 
-* **infra** – Deploy infrastructure
-* **api** – Deploy API service
-* **auth** – Deploy Auth service
-* **frontend** – Deploy Frontend service
+- **infra** – Deploy infrastructure
+- **api** – Deploy API service
+- **auth** – Deploy Auth service
+- **frontend** – Deploy Frontend service
 
 Child pipelines are triggered dynamically using rules based on the variable:
 
 ```
+
 PIPELINE_TARGET
+
 ```
 
 Example rule:
 
 ```
+
 rules:
-  - if: '$PIPELINE_TARGET == "infra"'
-  - when: never
-```
+
+* if: '$PIPELINE_TARGET == "infra"'
+* when: never
+
+````
 
 This allows selective pipeline execution depending on the deployment target.
 
@@ -252,15 +282,15 @@ This allows selective pipeline execution depending on the deployment target.
 
 ## Key Features
 
-* Fully automated infrastructure provisioning
-* Modular Terraform architecture
-* Bootstrap + environment infrastructure separation
-* Independent microservice deployment
-* Automated Docker image builds
-* Service versioning
-* GitLab CI/CD pipeline orchestration
-* Serverless deployment using Google Cloud Run
-* Load-balanced microservice architecture
+- Fully automated infrastructure provisioning
+- Modular Terraform architecture
+- Bootstrap + environment infrastructure separation
+- Independent microservice deployment
+- Automated Docker image builds
+- Service versioning
+- GitLab CI/CD pipeline orchestration
+- Serverless deployment using Google Cloud Run
+- Load-balanced microservice architecture
 
 ---
 
@@ -287,7 +317,7 @@ CloudRunAuth --> VPCConnector
 CloudRunFrontend --> VPCConnector
 
 VPCConnector --> VPC
-```
+````
 
 ---
 
