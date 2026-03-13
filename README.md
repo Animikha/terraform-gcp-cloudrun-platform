@@ -28,7 +28,7 @@ The goal of this project is to showcase a completely automated DevOps workflow i
 * **Terraform** (Infrastructure as Code)
 * **GitLab CI/CD**
 * **Docker**
-* **Python** (microservices)
+* **Python** (Flask – minimal demo services)
 
 ---
 
