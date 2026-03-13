@@ -25,6 +25,7 @@ The goal of this project is to showcase a completely automated DevOps workflow i
   * VPC
   * Serverless VPC Connector
   * HTTP Load Balancer
+  * IAM (Identity and Access Management)
 * **Terraform** (Infrastructure as Code)
 * **GitLab CI/CD**
 * **Docker**
