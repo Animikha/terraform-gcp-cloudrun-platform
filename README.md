@@ -6,10 +6,10 @@ This project demonstrates a fully automated CI/CD pipeline for deploying contain
 
 The infrastructure is provisioned using **Infrastructure as Code (Terraform)**, while each service is independently built, versioned, containerized, and deployed through GitLab pipelines.
 
-The goal of this project is to showcase a complete DevOps workflow including:
+The goal of this project is to showcase a completely automated DevOps workflow including:
 
 * Infrastructure provisioning
-* CI/CD automation
+* CI/CD 
 * Containerized microservices
 * Cloud Run deployment
 * Load balancing and networking
