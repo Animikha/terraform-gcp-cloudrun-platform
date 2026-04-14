@@ -14,8 +14,6 @@ Before deploying any service, the pipeline performs validation checks to ensure 
 
 A main orchestration pipeline connects both workflows—infrastructure provisioning and microservice deployment—resulting in a fully automated, idempotent, reproducible, and production-ready infrastructure with minimal manual intervention.
 
-The goal of this project is to provide a fully reproducible template for an end-to-end DevOps workflow, starting from provisioning Google Cloud Platform (GCP) infrastructure to deploying containerized microservices on top of that infrastructure, with minimal manual intervention.
-
 ---
 
 ## Tech Stack
@@ -370,8 +368,7 @@ DevInfra --> LoadBalancer
 ---
 
 ## Purpose of the Project
-
-This project was created to demonstrate a **production-style DevOps workflow** including:
+The goal of this project is to provide a fully reproducible template for an end-to-end DevOps workflow, starting from provisioning Google Cloud Platform (GCP) infrastructure to deploying containerized microservices on top of that infrastructure, with minimal manual intervention. It includes:
 
 * Infrastructure as Code
 * CI/CD automation
