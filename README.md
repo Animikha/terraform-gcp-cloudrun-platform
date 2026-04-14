@@ -2,9 +2,18 @@
 
 ## Overview
 
-This project demonstrates a fully automated CI/CD pipeline for deploying containerized microservices to **Google Cloud Run** using **Terraform** and **GitLab CI/CD**.
+This project demonstrates a **fully automated**, end-to-end DevOps workflow that covers both infrastructure provisioning and application deployment on **Google Cloud Platform (GCP)**.
 
-The infrastructure is provisioned using **Infrastructure as Code (Terraform)**, while each service is independently built, versioned, containerized, and deployed through GitLab pipelines.
+The infrastructure layer is provisioned using **Infrastructure as Code (Terraform)** and deployed through a dedicated CI/CD pipeline. The Terraform setup is modular and layered, with separate pipeline stages responsible for:
+- Creating and managing Google Cloud Storage (GCS) buckets for Terraform remote state
+- Deploying different layers of the infrastructure in a controlled order
+- Safely tearing down and cleaning up infrastructure when required
+
+On top of the provisioned infrastructure, containerized microservices are built and deployed using GitLab CI/CD. Each microservice is independently built, versioned, containerized, and deployed through its own dedicated GitLab pipeline.
+Before deploying any service, the pipeline performs validation checks to ensure that the required infrastructure already exists. This prevents premature deployments and guarantees that microservices are only deployed onto a correctly provisioned and ready GCP environment.
+
+A main orchestration pipeline connects both workflows—infrastructure provisioning and microservice deployment—resulting in a fully automated, reproducible, and production-ready infrastructure with minimal manual intervention.
+
 
 The goal of this project is to showcase a complete DevOps workflow including:
 
