@@ -1,4 +1,4 @@
-# Automated Cloud Run Deployment with Terraform and GitLab CI/CD
+# Fully Automated Cloud Run Deployment with Terraform and GitLab CI/CD
 
 ## Overview
 
