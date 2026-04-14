@@ -9,19 +9,12 @@ The infrastructure layer is provisioned using **Infrastructure as Code (Terrafor
 - Deploying different layers of the infrastructure in a controlled order
 - Safely tearing down and cleaning up infrastructure when required
 
-On top of the provisioned infrastructure, containerized microservices are built and deployed using GitLab CI/CD. Each microservice is independently built, versioned, containerized, and deployed through its own dedicated GitLab pipeline.
+On top of the provisioned infrastructure, containerized microservices are built and deployed using **GitLab CI/CD**. Each microservice is independently built, versioned, containerized, and deployed through its own dedicated GitLab pipeline.
 Before deploying any service, the pipeline performs validation checks to ensure that the required infrastructure already exists. This prevents premature deployments and guarantees that microservices are only deployed onto a correctly provisioned and ready GCP environment.
 
-A main orchestration pipeline connects both workflows—infrastructure provisioning and microservice deployment—resulting in a fully automated, reproducible, and production-ready infrastructure with minimal manual intervention.
+A main orchestration pipeline connects both workflows—infrastructure provisioning and microservice deployment—resulting in a fully automated, idempotent, reproducible, and production-ready infrastructure with minimal manual intervention.
 
-
-The goal of this project is to showcase a complete DevOps workflow including:
-
-* Infrastructure provisioning
-* CI/CD automation
-* Containerized microservices
-* Cloud Run deployment
-* Load balancing and networking
+The goal of this project is to provide a fully reproducible template for an end-to-end DevOps workflow, starting from provisioning Google Cloud Platform (GCP) infrastructure to deploying containerized microservices on top of that infrastructure, with minimal manual intervention.
 
 ---
 
