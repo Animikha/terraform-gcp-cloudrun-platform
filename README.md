@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project demonstrates a **fully automated**, end-to-end DevOps workflow that covers both infrastructure provisioning and application deployment on **Google Cloud Platform (GCP)**.
+This project demonstrates a **fully automated**, end-to-end DevOps workflow that covers both infrastructure provisioning and application deployment on **Google Cloud Platform (GCP)** such that minimal user intervention is needed.
 
 The infrastructure layer is provisioned using **Infrastructure as Code (Terraform)** and deployed through a dedicated CI/CD pipeline. The Terraform setup is modular and layered, with separate pipeline stages responsible for:
 - Creating and managing **Google Cloud Storage (GCS)** buckets for Terraform remote state
